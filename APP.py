@@ -80,54 +80,21 @@ st.dataframe(df.isnull().sum().to_frame("Missing Values"))
 # Employee Retention Analysis
 # ==========================
 
-st.header("📈 Employee Retention Analysis")
+col1, col2 = st.columns(2)
 
-# Employees Stayed vs Left
-st.subheader("Employees Stayed vs Left")
+with col1:
+    st.subheader("Salary vs Retention")
 
-retention = df['left'].value_counts()
+    fig, ax = plt.subplots(figsize=(5,3))
+    salary_table.plot(kind='bar', ax=ax)
+    st.pyplot(fig)
 
-st.write(retention)
+with col2:
+    st.subheader("Department vs Retention")
 
-fig, ax = plt.subplots()
-
-ax.bar(['Stayed', 'Left'], retention.values)
-
-ax.set_xlabel("Employee Status")
-ax.set_ylabel("Number of Employees")
-ax.set_title("Employees Stayed vs Left")
-
-st.pyplot(fig)
-
-st.subheader(" Salary vs Employee Retention")
-
-salary_table = pd.crosstab(df['salary'], df['left'])
-
-fig, ax = plt.subplots(figsize=(6,4))
-
-salary_table.plot(kind='bar', ax=ax)
-
-ax.set_title("Salary vs Employee Retention")
-ax.set_xlabel("Salary")
-ax.set_ylabel("Number of Employees")
-ax.legend(["Stayed", "Left"])
-
-st.pyplot(fig)
-
-st.subheader("🏢 Department vs Employee Retention")
-
-department_table = pd.crosstab(df['Department'], df['left'])
-
-fig, ax = plt.subplots(figsize=(10,5))
-
-department_table.plot(kind='bar', ax=ax)
-
-ax.set_title("Department vs Employee Retention")
-ax.set_xlabel("Department")
-ax.set_ylabel("Number of Employees")
-ax.legend(["Stayed", "Left"])
-
-st.pyplot(fig)
+    fig, ax = plt.subplots(figsize=(5,3))
+    department_table.plot(kind='bar', ax=ax)
+    st.pyplot(fig)
 
 # ==========================
 # Machine Learning Model
