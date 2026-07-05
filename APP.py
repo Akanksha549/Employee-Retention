@@ -100,28 +100,41 @@ else:
     fig1.tight_layout()
 
     st.pyplot(fig1, use_container_width=False)
-# ==========================================
-# Employee Retention Analysis
-# ==========================================
-
-st.header("📈 Employee Retention Analysis")
-
+    
 # Employees Stayed vs Left
 st.subheader("Employees Stayed vs Left")
 
 retention = df['left'].value_counts()
 
-st.write(retention)
+# Convert to percentage
+retention_percentage = df['left'].value_counts(normalize=True) * 100
 
-fig, ax = plt.subplots()
+col1, col2 = st.columns(2)
 
-ax.bar(['Stayed', 'Left'], retention.values)
+with col1:
+    st.write("### Count")
+    st.write(retention)
+
+with col2:
+    st.write("### Percentage")
+    st.write(retention_percentage.round(2).astype(str) + " %")
+
+# Medium size chart
+fig, ax = plt.subplots(figsize=(5, 3))  # 👈 reduced size
+
+ax.bar(['Stayed', 'Left'], retention.values, color=['green', 'red'])
 
 ax.set_xlabel("Employee Status")
 ax.set_ylabel("Number of Employees")
 ax.set_title("Employees Stayed vs Left")
 
-st.pyplot(fig)
+# Add values on top of bars
+for i, v in enumerate(retention.values):
+    ax.text(i, v + 5, str(v), ha='center', fontsize=9)
+
+plt.tight_layout()
+
+st.pyplot(fig, use_container_width=False)
 
 # ------------------------------------------
 # Salary vs Employee Retention
