@@ -148,9 +148,9 @@ with col1:
 
     salary_chart = pd.crosstab(salary_labels, df["left"])
 
-    fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
+    # 👇 increased size for better readability
+    fig1, ax1 = plt.subplots(figsize=(4.2, 3.2))
 
-    # Proper grouped bar chart (clean separation)
     x = range(len(salary_chart.index))
     width = 0.35
 
@@ -171,13 +171,13 @@ with col1:
     )
 
     ax1.set_xticks(list(x))
-    ax1.set_xticklabels(salary_chart.index, fontsize=8)
+    ax1.set_xticklabels(salary_chart.index, fontsize=9)
 
-    ax1.set_title("Salary vs Retention", fontsize=9, fontweight='bold')
+    ax1.set_title("Salary vs Retention", fontsize=10, fontweight='bold')
     ax1.set_xlabel("")
-    ax1.set_ylabel("Employees", fontsize=8)
+    ax1.set_ylabel("Employees", fontsize=9)
 
-    ax1.legend(fontsize=7, frameon=False, loc="upper right")
+    ax1.legend(fontsize=8, frameon=False, loc="upper right")
 
     ax1.grid(axis='y', linestyle='--', alpha=0.3)
 
@@ -342,10 +342,10 @@ if st.button("Predict"):
     leave_prob = probability[1]
 
     if prediction[0] == 0:
-        st.success(f" Employee is likely to STAY in the Company (Yes)")
+        st.success(f" Employee is likely to STAY in the Company.")
         st.info(f"Probability → Stay: {stay_prob:.2f} | Leave: {leave_prob:.2f}")
     else:
-        st.error(f" Employee is likely to LEAVE the Company (No)")
+        st.error(f" Employee is likely to LEAVE the Company.")
         st.info(f"Probability → Stay: {stay_prob:.2f} | Leave: {leave_prob:.2f}")
 
 
