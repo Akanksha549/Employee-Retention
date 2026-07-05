@@ -103,43 +103,26 @@ else:
 #----------------------------    
 # Employees Stayed vs Left
 #----------------------------
-
-# Employees Stayed vs Left
 st.subheader("Employees Stayed vs Left")
 
-retention = df['left'].value_counts().sort_index()
+retention = df['left'].value_counts()
 
-labels = ['Stayed (No)', 'Left (Yes)']
+fig, ax = plt.subplots(figsize=(2.5, 1.5))  # 👈 more minimized size
 
-fig, ax = plt.subplots(figsize=(3.2, 2.0))  # compact & clean
+ax.bar(['Stayed', 'Left'], retention.values, color=['green', 'red'])
 
-bars = ax.bar(
-    labels,
-    retention.values,
-    color=['#2ecc71', '#e74c3c'],  # modern green/red
-    edgecolor='black',
-    linewidth=0.5
-)
-
-ax.set_title("Employees Stayed vs Left", fontsize=9, fontweight='bold')
+ax.set_xlabel("")
 ax.set_ylabel("Count")
-ax.grid(axis='y', linestyle='--', alpha=0.3)  # light grid for clarity
+ax.set_title("Employees Stayed vs Left", fontsize=7)
 
-# clean value labels
-for bar in bars:
-    height = bar.get_height()
-    ax.text(
-        bar.get_x() + bar.get_width()/2,
-        height,
-        f'{int(height)}',
-        ha='center',
-        va='bottom',
-        fontsize=8,
-        fontweight='bold'
-    )
+# value labels (optional but clean)
+for i, v in enumerate(retention.values):
+    ax.text(i, v + 2, str(v), ha='center', fontsize=6)
 
 plt.tight_layout()
+
 st.pyplot(fig, use_container_width=False)
+
 # ------------------------------------------
 # Salary vs Employee Retention
 # ------------------------------------------
