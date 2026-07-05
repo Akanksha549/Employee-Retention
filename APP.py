@@ -104,53 +104,38 @@ else:
 # Employees Stayed vs Left
 #----------------------------
 
+# Employees Stayed vs Left
 st.subheader("Employees Stayed vs Left")
 
 retention = df['left'].value_counts().sort_index()
-total = retention.sum()
 
-stayed = retention.get(0, 0)
-left = retention.get(1, 0)
+labels = ['Stayed (No)', 'Left (Yes)']
 
-# ==========================
-# KEY POINTS (CARDS STYLE)
-# ==========================
-col1, col2 = st.columns(2)
-
-with col1:
-    st.metric("🟢 Stayed Employees", stayed)
-
-with col2:
-    st.metric("🔴 Left Employees", left)
-
-# ==========================
-# BAR CHART (CLEAN LOOK)
-# ==========================
-fig, ax = plt.subplots(figsize=(2.2, 1.0))
+fig, ax = plt.subplots(figsize=(3.2, 2.0))  # compact & clean
 
 bars = ax.bar(
-    ['Stayed', 'Left'],
-    [stayed, left],
-    color=['#2ecc71', '#e74c3c'],
-    edgecolor='black'
+    labels,
+    retention.values,
+    color=['#2ecc71', '#e74c3c'],  # modern green/red
+    edgecolor='black',
+    linewidth=0.5
 )
 
-ax.set_title("Employees Stayed vs Left", fontsize=5, fontweight='italic')
+ax.set_title("Employees Stayed vs Left", fontsize=9, fontweight='bold')
 ax.set_ylabel("Count")
-ax.grid(axis='y', linestyle='--', alpha=0.2)
+ax.grid(axis='y', linestyle='--', alpha=0.3)  # light grid for clarity
 
-# ONLY INSIDE LABELS (no outside mess)
+# clean value labels
 for bar in bars:
     height = bar.get_height()
     ax.text(
         bar.get_x() + bar.get_width()/2,
-        height/2,   #  inside bar
-        f"{int(height)}",
+        height,
+        f'{int(height)}',
         ha='center',
-        va='center',
-        fontsize=9,
-        fontweight='bold',
-        color='white'
+        va='bottom',
+        fontsize=8,
+        fontweight='bold'
     )
 
 plt.tight_layout()
