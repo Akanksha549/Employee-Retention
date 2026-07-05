@@ -73,68 +73,91 @@ with col2:
 # Missing Values
 # ==========================
 
-st.subheader("❌ Missing Values")
+st.subheader(" Missing Values")
 
 st.dataframe(df.isnull().sum().to_frame("Missing Values"))
 
-# ==========================
+# ==========================================
 # Employee Retention Analysis
-# ==========================
+# ==========================================
 
-st.header("📈 Employee Retention Analysis")
+st.header(" Employee Retention Analysis")
 
-# Employees Stayed vs Left
-st.subheader("Employees Stayed vs Left")
+col1, col2 = st.columns(2)
 
-retention = df['left'].value_counts()
+# ------------------------------------------
+# Salary vs Employee Retention
+# ------------------------------------------
 
-st.write(retention)
+with col1:
 
-fig, ax = plt.subplots()
+    salary_labels = df["salary"].replace({
+        0: "Low",
+        1: "Medium",
+        2: "High"
+    })
 
-ax.bar(['Stayed', 'Left'], retention.values)
+    salary_chart = pd.crosstab(salary_labels, df["left"])
 
-ax.set_xlabel("Employee Status")
-ax.set_ylabel("Number of Employees")
-ax.set_title("Employees Stayed vs Left")
+    fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
 
-st.pyplot(fig)
+    salary_chart.plot(
+        kind="bar",
+        ax=ax1,
+        width=0.5
+    )
 
-st.subheader("💰 Salary vs Employee Retention")
+    ax1.set_title("Salary vs Retention", fontsize=9)
+    ax1.set_xlabel("")
+    ax1.set_ylabel("Employees", fontsize=8)
+    ax1.tick_params(axis='x', labelsize=8, rotation=0)
+    ax1.tick_params(axis='y', labelsize=8)
+    ax1.legend(
+        ["Stayed", "Left"],
+        fontsize=7,
+        loc="upper right"
+    )
 
-salary_table = pd.crosstab(df['salary'], df['left'])
+    plt.tight_layout()
 
-fig, ax = plt.subplots(figsize=(6,4))
+    st.pyplot(fig1, use_container_width=False)
 
-salary_table.plot(kind='bar', ax=ax)
+# ------------------------------------------
+# Department vs Employee Retention
+# ------------------------------------------
 
-ax.set_title("Salary vs Employee Retention")
-ax.set_xlabel("Salary")
-ax.set_ylabel("Number of Employees")
-ax.legend(["Stayed", "Left"])
+with col2:
 
-st.pyplot(fig)
+    department_chart = pd.crosstab(df["Department"], df["left"])
 
-st.subheader("🏢 Department vs Employee Retention")
+    fig2, ax2 = plt.subplots(figsize=(4.5, 2.8))
 
-department_table = pd.crosstab(df['Department'], df['left'])
+    department_chart.plot(
+        kind="bar",
+        ax=ax2,
+        width=0.5
+    )
 
-fig, ax = plt.subplots(figsize=(10,5))
+    ax2.set_title("Department vs Retention", fontsize=9)
+    ax2.set_xlabel("")
+    ax2.set_ylabel("Employees", fontsize=8)
+    ax2.tick_params(axis='x', labelsize=7, rotation=40)
+    ax2.tick_params(axis='y', labelsize=8)
+    ax2.legend(
+        ["Stayed", "Left"],
+        fontsize=7,
+        loc="upper right"
+    )
 
-department_table.plot(kind='bar', ax=ax)
+    plt.tight_layout()
 
-ax.set_title("Department vs Employee Retention")
-ax.set_xlabel("Department")
-ax.set_ylabel("Number of Employees")
-ax.legend(["Stayed", "Left"])
-
-st.pyplot(fig)
+    st.pyplot(fig2, use_container_width=False)
 
 # ==========================
 # Machine Learning Model
 # ==========================
 
-st.header("🤖 Logistic Regression Model")
+st.header(" Logistic Regression Model")
 
 # Convert salary into numerical values
 salary_mapping = {
@@ -165,7 +188,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # Train Button
-if st.button("🚀 Train Model"):
+if st.button(" Train Model"):
 
     model = LogisticRegression(max_iter=1000)
 
@@ -186,7 +209,7 @@ if st.button("🚀 Train Model"):
 # Employee Retention Prediction
 # ==========================
 
-st.header("🔍 Predict Employee Retention")
+st.header(" Predict Employee Retention")
 
 # Check if model is trained
 if "model" in st.session_state:
@@ -251,4 +274,4 @@ if "model" in st.session_state:
             st.error("Employee is likely to Leave the Company.")
 
 else:
-    st.warning("⚠️ Please train the model first by clicking 'Train Model'.")
+    st.warning("⚠️Please train the model first by clicking 'Train Model'.")
