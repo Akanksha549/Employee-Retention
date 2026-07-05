@@ -13,9 +13,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
-from google.colab import files
-uploaded = files.upload()
-
 df = pd.read_csv('HR_comma_sep.csv')
 df.head()
 
