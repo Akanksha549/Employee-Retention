@@ -72,7 +72,7 @@ with col2:
 # Missing Values
 # ==========================
 
-st.subheader("❌ Missing Values")
+st.subheader(" Missing Values")
 
 st.dataframe(df.isnull().sum().to_frame("Missing Values"))
 
@@ -99,7 +99,7 @@ ax.set_title("Employees Stayed vs Left")
 
 st.pyplot(fig)
 
-st.subheader("💰 Salary vs Employee Retention")
+st.subheader(" Salary vs Employee Retention")
 
 salary_table = pd.crosstab(df['salary'], df['left'])
 
