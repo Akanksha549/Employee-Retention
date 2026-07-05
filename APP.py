@@ -72,55 +72,23 @@ with col2:
 # ==========================
 # Missing Values
 # ==========================
+st.header("Missing Values")
 
-st.subheader(" Missing Values")
+missing_values = df.isnull().sum()
 
-st.dataframe(df.isnull().sum().to_frame("Missing Values"))
+# Check total missing values
+if missing_values.sum() == 0:
+    st.success("No missing values found in the dataset.")
+else:
+    st.warning("Missing values detected in the dataset.")
 
-# ==========================================
-# Employee Retention Analysis
-# ==========================================
+    # Show only columns having missing values
+    missing_df = missing_values[missing_values > 0].to_frame(name="Missing Values")
 
-st.header(" Employee Retention Analysis")
-
-col1, col2 = st.columns(2)
-
-# ------------------------------------------
-# Salary vs Employee Retention
-# ------------------------------------------
-
-with col1:
-
-    salary_labels = df["salary"].replace({
-        0: "Low",
-        1: "Medium",
-        2: "High"
-    })
-
-    salary_chart = pd.crosstab(salary_labels, df["left"])
-
-    fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
-
-    salary_chart.plot(
-        kind="bar",
-        ax=ax1,
-        width=0.5
+    st.dataframe(
+        missing_df,
+        use_container_width=True
     )
-
-    ax1.set_title("Salary vs Retention", fontsize=9)
-    ax1.set_xlabel("")
-    ax1.set_ylabel("Employees", fontsize=8)
-    ax1.tick_params(axis='x', labelsize=8, rotation=0)
-    ax1.tick_params(axis='y', labelsize=8)
-    ax1.legend(
-        ["Stayed", "Left"],
-        fontsize=7,
-        loc="upper right"
-    )
-
-    plt.tight_layout()
-
-    st.pyplot(fig1, use_container_width=False)
 
 # ------------------------------------------
 # Department vs Employee Retention
