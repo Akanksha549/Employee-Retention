@@ -138,52 +138,20 @@ st.pyplot(fig, use_container_width=False)
 # ------------------------------------------
 # Salary vs Employee Retention
 # ------------------------------------------
-with col1:
+st.subheader("💰 Salary vs Employee Retention")
 
-    salary_labels = df["salary"].replace({
-        0: "Low",
-        1: "Medium",
-        2: "High"
-    })
+salary_table = pd.crosstab(df['salary'], df['left'])
 
-    salary_chart = pd.crosstab(salary_labels, df["left"])
+fig, ax = plt.subplots(figsize=(6,4))
 
-    fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
+salary_table.plot(kind='bar', ax=ax)
 
-    # Proper grouped bar chart (clean separation)
-    x = range(len(salary_chart.index))
-    width = 0.35
+ax.set_title("Salary vs Employee Retention")
+ax.set_xlabel("Salary")
+ax.set_ylabel("Number of Employees")
+ax.legend(["Stayed", "Left"])
 
-    ax1.bar(
-        [i - width/2 for i in x],
-        salary_chart[0],
-        width=width,
-        label="Stayed",
-        color="#2ecc71"
-    )
-
-    ax1.bar(
-        [i + width/2 for i in x],
-        salary_chart[1],
-        width=width,
-        label="Left",
-        color="#e74c3c"
-    )
-
-    ax1.set_xticks(list(x))
-    ax1.set_xticklabels(salary_chart.index, fontsize=8)
-
-    ax1.set_title("Salary vs Retention", fontsize=9, fontweight='bold')
-    ax1.set_xlabel("")
-    ax1.set_ylabel("Employees", fontsize=8)
-
-    ax1.legend(fontsize=7, frameon=False, loc="upper right")
-
-    ax1.grid(axis='y', linestyle='--', alpha=0.3)
-
-    plt.tight_layout()
-
-    st.pyplot(fig1, use_container_width=False) 
+st.pyplot(fig)
 
 # ------------------------------------------
 # Department vs Employee Retention
