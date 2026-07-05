@@ -146,10 +146,11 @@ with col1:
         2: "High"
     })
 
-    salary_chart = pd.crosstab(salary_labels, df["left"]).reindex(["Low", "Medium", "High"])
+    salary_chart = pd.crosstab(salary_labels, df["left"])
 
-    fig1, ax1 = plt.subplots(figsize=(4.2, 3.2))
+    fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
 
+    # Proper grouped bar chart (clean separation)
     x = range(len(salary_chart.index))
     width = 0.35
 
@@ -169,26 +170,20 @@ with col1:
         color="#e74c3c"
     )
 
-    # X axis clean fix (no mixing)
     ax1.set_xticks(list(x))
-    ax1.set_xticklabels(salary_chart.index, fontsize=9)
+    ax1.set_xticklabels(salary_chart.index, fontsize=8)
 
-    # Title + labels
-    ax1.set_title("Salary vs Retention", fontsize=10, fontweight='bold')
-    ax1.set_ylabel("Employees", fontsize=9)
+    ax1.set_title("Salary vs Retention", fontsize=9, fontweight='bold')
+    ax1.set_xlabel("")
+    ax1.set_ylabel("Employees", fontsize=8)
 
-    # Grid for better readability
+    ax1.legend(fontsize=7, frameon=False, loc="upper right")
+
     ax1.grid(axis='y', linestyle='--', alpha=0.3)
-
-    # Legend clean
-    ax1.legend(fontsize=8, frameon=False, loc="upper right")
-
-    # 👇 FIX: graph ko neeche shift (top space reduce)
-    plt.subplots_adjust(top=0.85)
 
     plt.tight_layout()
 
-    st.pyplot(fig1, use_container_width=False)
+    st.pyplot(fig1, use_container_width=False) ye thoda isse kr rha hai iska size thoda sa bda kro ek code de rhi us hisab se 
 
 # ------------------------------------------
 # Department vs Employee Retention
