@@ -183,7 +183,7 @@ with col1:
 
     plt.tight_layout()
 
-    st.pyplot(fig1, use_container_width=False) ye thoda isse kr rha hai iska size thoda sa bda kro ek code de rhi us hisab se 
+    st.pyplot(fig1, use_container_width=False) 
 
 # ------------------------------------------
 # Department vs Employee Retention
