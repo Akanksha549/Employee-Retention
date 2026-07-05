@@ -253,7 +253,7 @@ if st.button(" Train Model"):
 # Employee Retention Prediction
 # ==========================
 
-st.header("🔍 Predict Employee Retention")
+st.header("Predict Employee Retention")
 
 # Check if model is trained
 if "model" in st.session_state:
