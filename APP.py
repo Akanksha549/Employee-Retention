@@ -106,31 +106,17 @@ st.subheader("Employees Stayed vs Left")
 
 retention = df['left'].value_counts()
 
-# Convert to percentage
-retention_percentage = df['left'].value_counts(normalize=True) * 100
-
-col1, col2 = st.columns(2)
-
-with col1:
-    st.write("### Count")
-    st.write(retention)
-
-with col2:
-    st.write("### Percentage")
-    st.write(retention_percentage.round(2).astype(str) + " %")
-
-# Medium size chart
-fig, ax = plt.subplots(figsize=(5, 3))  # 👈 reduced size
+fig, ax = plt.subplots(figsize=(3.5, 2.5))  # 👈 more minimized size
 
 ax.bar(['Stayed', 'Left'], retention.values, color=['green', 'red'])
 
-ax.set_xlabel("Employee Status")
-ax.set_ylabel("Number of Employees")
-ax.set_title("Employees Stayed vs Left")
+ax.set_xlabel("")
+ax.set_ylabel("Count")
+ax.set_title("Employees Stayed vs Left", fontsize=9)
 
-# Add values on top of bars
+# value labels (optional but clean)
 for i, v in enumerate(retention.values):
-    ax.text(i, v + 5, str(v), ha='center', fontsize=9)
+    ax.text(i, v + 2, str(v), ha='center', fontsize=8)
 
 plt.tight_layout()
 
