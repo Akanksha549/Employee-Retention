@@ -243,6 +243,21 @@ if "model" in st.session_state:
         value=3
     )
 
+col1, col2, col3 = st.columns(3)
+
+col1.metric("👥 Total Employees", len(df))
+col2.metric("✅ Stayed", (df["left"] == 0).sum())
+col3.metric("❌ Left", (df["left"] == 1).sum())
+
+retention_rate = ((df["left"] == 0).sum() / len(df)) * 100
+attrition_rate = ((df["left"] == 1).sum() / len(df)) * 100
+
+col4, col5, col6 = st.columns(3)
+
+col4.metric("📈 Retention Rate", f"{retention_rate:.2f}%")
+col5.metric("📉 Attrition Rate", f"{attrition_rate:.2f}%")
+col6.metric("🤖 Model Accuracy", f"{accuracy*100:.2f}%")
+
     # Convert inputs
     promotion = 1 if promotion == "Yes" else 0
 
