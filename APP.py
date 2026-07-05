@@ -90,10 +90,45 @@ else:
         use_container_width=True
     )
 
-# Salary vs Retention
+
+
+    ax1.set_title("Salary vs Employee Retention", fontsize=11)
+    ax1.set_xlabel("Salary Level")
+    ax1.set_ylabel("Employees")
+    ax1.legend(["Stayed", "Left"], fontsize=8)
+    ax1.tick_params(axis="x", rotation=0)
+    fig1.tight_layout()
+
+    st.pyplot(fig1, use_container_width=False)
+# ==========================================
+# Employee Retention Analysis
+# ==========================================
+
+st.header("📈 Employee Retention Analysis")
+
+# Employees Stayed vs Left
+st.subheader("Employees Stayed vs Left")
+
+retention = df['left'].value_counts()
+
+st.write(retention)
+
+fig, ax = plt.subplots()
+
+ax.bar(['Stayed', 'Left'], retention.values)
+
+ax.set_xlabel("Employee Status")
+ax.set_ylabel("Number of Employees")
+ax.set_title("Employees Stayed vs Left")
+
+st.pyplot(fig)
+
+# ------------------------------------------
+# Salary vs Employee Retention
+# ------------------------------------------
+
 with col1:
 
-    # Convert numeric salary back to labels only for plotting
     salary_labels = df["salary"].replace({
         0: "Low",
         1: "Medium",
@@ -102,20 +137,26 @@ with col1:
 
     salary_chart = pd.crosstab(salary_labels, df["left"])
 
-    fig1, ax1 = plt.subplots(figsize=(4.5,3))
+    fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
 
     salary_chart.plot(
         kind="bar",
         ax=ax1,
-        width=0.7
+        width=0.5
     )
 
-    ax1.set_title("Salary vs Employee Retention", fontsize=11)
-    ax1.set_xlabel("Salary Level")
-    ax1.set_ylabel("Employees")
-    ax1.legend(["Stayed", "Left"], fontsize=8)
-    ax1.tick_params(axis="x", rotation=0)
-    fig1.tight_layout()
+    ax1.set_title("Salary vs Retention", fontsize=9)
+    ax1.set_xlabel("")
+    ax1.set_ylabel("Employees", fontsize=8)
+    ax1.tick_params(axis='x', labelsize=8, rotation=0)
+    ax1.tick_params(axis='y', labelsize=8)
+    ax1.legend(
+        ["Stayed", "Left"],
+        fontsize=7,
+        loc="upper right"
+    )
+
+    plt.tight_layout()
 
     st.pyplot(fig1, use_container_width=False)
 
@@ -201,12 +242,11 @@ if st.button(" Train Model"):
 
     # Save model in session
     st.session_state["model"] = model
-
 # ==========================
 # Employee Retention Prediction
 # ==========================
 
-st.header(" Predict Employee Retention")
+st.header("🔍 Predict Employee Retention")
 
 # Check if model is trained
 if "model" in st.session_state:
@@ -243,23 +283,9 @@ if "model" in st.session_state:
         value=3
     )
 
-col1, col2, col3 = st.columns(3)
-
-col1.metric("👥 Total Employees", len(df))
-col2.metric("✅ Stayed", (df["left"] == 0).sum())
-col3.metric("❌ Left", (df["left"] == 1).sum())
-
-retention_rate = ((df["left"] == 0).sum() / len(df)) * 100
-attrition_rate = ((df["left"] == 1).sum() / len(df)) * 100
-
-col4, col5, col6 = st.columns(3)
-
-col4.metric("📈 Retention Rate", f"{retention_rate:.2f}%")
-col5.metric("📉 Attrition Rate", f"{attrition_rate:.2f}%")
-col6.metric("🤖 Model Accuracy", f"{accuracy*100:.2f}%")
-
     # Convert inputs
-promotion = 1 if promotion == "Yes" else 0
+    promotion = 1 if promotion == "Yes" else 0
+
     salary_dict = {
         "Low": 0,
         "Medium": 1,
@@ -269,33 +295,22 @@ promotion = 1 if promotion == "Yes" else 0
     salary = salary_dict[salary]
 
     # Prediction
-   if st.button("Predict"):
+    if st.button("Predict"):
 
-    # Convert inputs
+        result = st.session_state["model"].predict([[
+            satisfaction,
+            monthly_hours,
+            promotion,
+            salary,
+            years
+        ]])
 
-if st.button("Predict"):
-
-    # Convert inputs
-    promotion = 1 if promotion == "Yes" else 0
-
-    salary = {
-        "Low": 0,
-        "Medium": 1,
-        "High": 2
-    }[salary]
-
-    prediction = model.predict([[
-        satisfaction,
-        monthly_hours,
-        promotion,
-        salary,
-        years
-    ]])
-
-    if prediction[0] == 0:
-        st.success("✅ Employee is likely to Stay.")
-    else:
-        st.error("❌ Employee is likely to Leave.")
+        if result[0] == 0:
+            st.success(" Employee is likely to Stay in the Company.")
+        else:
+            st.error(" Employee is likely to Leave the Company.")
 
 else:
     st.warning("⚠️Please train the model first by clicking 'Train Model'.")
+
+
