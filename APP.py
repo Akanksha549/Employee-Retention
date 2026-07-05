@@ -271,20 +271,29 @@ if promotion == "Yes" else 0
     salary = salary_dict[salary]
 
     # Prediction
-    if st.button("Predict"):
+   if st.button("Predict"):
 
-        result = st.session_state["model"].predict([[
-            satisfaction,
-            monthly_hours,
-            promotion,
-            salary,
-            years
-        ]])
+    # Convert inputs
+    promotion = 1 if promotion == "Yes" else 0
 
-        if result[0] == 0:
-            st.success("Employee is likely to Stay in the Company.")
-        else:
-            st.error("Employee is likely to Leave the Company.")
+    salary = {
+        "Low": 0,
+        "Medium": 1,
+        "High": 2
+    }[salary]
+
+    prediction = model.predict([[
+        satisfaction,
+        monthly_hours,
+        promotion,
+        salary,
+        years
+    ]])
+
+    if prediction[0] == 0:
+        st.success("Employee is likely to Stay.")
+    else:
+        st.error("Employee is likely to Leave.")
 
 else:
     st.warning("⚠️Please train the model first by clicking 'Train Model'.")
