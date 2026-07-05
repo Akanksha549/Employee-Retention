@@ -90,6 +90,35 @@ else:
         use_container_width=True
     )
 
+# Salary vs Retention
+with col1:
+
+    # Convert numeric salary back to labels only for plotting
+    salary_labels = df["salary"].replace({
+        0: "Low",
+        1: "Medium",
+        2: "High"
+    })
+
+    salary_chart = pd.crosstab(salary_labels, df["left"])
+
+    fig1, ax1 = plt.subplots(figsize=(4.5,3))
+
+    salary_chart.plot(
+        kind="bar",
+        ax=ax1,
+        width=0.7
+    )
+
+    ax1.set_title("Salary vs Employee Retention", fontsize=11)
+    ax1.set_xlabel("Salary Level")
+    ax1.set_ylabel("Employees")
+    ax1.legend(["Stayed", "Left"], fontsize=8)
+    ax1.tick_params(axis="x", rotation=0)
+    fig1.tight_layout()
+
+    st.pyplot(fig1, use_container_width=False)
+
 # ------------------------------------------
 # Department vs Employee Retention
 # ------------------------------------------
