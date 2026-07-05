@@ -259,9 +259,7 @@ col5.metric("📉 Attrition Rate", f"{attrition_rate:.2f}%")
 col6.metric("🤖 Model Accuracy", f"{accuracy*100:.2f}%")
 
     # Convert inputs
-    promotion = 1
-if promotion == "Yes" else 0
-
+    promotion = 1 if promotion == "Yes" else 0
     salary_dict = {
         "Low": 0,
         "Medium": 1,
