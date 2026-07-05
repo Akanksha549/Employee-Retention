@@ -13,6 +13,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
 
+uploaded_file = st.file_uploader("Upload HR Dataset", type=["csv"])
+
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.write(df.head())
+
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
