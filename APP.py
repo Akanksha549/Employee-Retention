@@ -110,7 +110,7 @@ retention = df['left'].value_counts().sort_index()
 sizes = [retention.get(0, 0), retention.get(1, 0)]
 colors = ['#2ecc71', '#e74c3c']
 
-fig, ax = plt.subplots(figsize=(2.2, 1.2))
+fig, ax = plt.subplots(figsize=(3.2, 2.2))
 
 def absolute_value(val):
     total = sum(sizes)
