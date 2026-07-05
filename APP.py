@@ -105,28 +105,30 @@ else:
 #----------------------------
 st.subheader("Employees Stayed vs Left")
 
-retention = df['left'].value_counts()
+retention = df['left'].value_counts().sort_index()
 
-fig, ax = plt.subplots(figsize=(2.5, 1.5))  # 👈 more minimized size
+labels = ['Stayed (No)', 'Left (Yes)']
+sizes = [retention.get(0, 0), retention.get(1, 0)]
 
-ax.bar(['Stayed', 'Left'], retention.values, color=['green', 'red'])
+colors = ['#2ecc71', '#e74c3c']
 
-ax.set_xlabel("")
-ax.set_ylabel("Count")
-ax.set_title("Employees Stayed vs Left", fontsize=7)
+fig, ax = plt.subplots(figsize=(3.2, 3.2))
 
-# value labels (optional but clean)
-for i, v in enumerate(retention.values):
-    ax.text(i, v + 2, str(v), ha='center', fontsize=6)
+ax.pie(
+    sizes,
+    labels=labels,
+    colors=colors,
+    autopct='%1.1f%%',
+    startangle=90,
+    textprops={'fontsize': 9}
+)
 
-plt.tight_layout()
+ax.set_title("Retention Distribution", fontsize=10, fontweight='bold')
 
 st.pyplot(fig, use_container_width=False)
-
 # ------------------------------------------
 # Salary vs Employee Retention
 # ------------------------------------------
-
 with col1:
 
     salary_labels = df["salary"].replace({
@@ -142,19 +144,25 @@ with col1:
     salary_chart.plot(
         kind="bar",
         ax=ax1,
-        width=0.5
+        width=0.6,
+        color=['#2ecc71', '#e74c3c']  # Stayed, Left colors
     )
 
-    ax1.set_title("Salary vs Retention", fontsize=9)
+    ax1.set_title("Salary vs Retention", fontsize=9, fontweight='bold')
     ax1.set_xlabel("")
     ax1.set_ylabel("Employees", fontsize=8)
+
     ax1.tick_params(axis='x', labelsize=8, rotation=0)
     ax1.tick_params(axis='y', labelsize=8)
+
     ax1.legend(
         ["Stayed", "Left"],
         fontsize=7,
-        loc="upper right"
+        loc="upper right",
+        frameon=False
     )
+
+    ax1.grid(axis='y', linestyle='--', alpha=0.3)
 
     plt.tight_layout()
 
