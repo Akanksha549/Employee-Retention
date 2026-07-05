@@ -21,7 +21,7 @@ from sklearn.metrics import accuracy_score
 st.set_page_config(
     page_title="Employee Retention Prediction",
     page_icon="📊",
-    layout="centered"
+    layout="wide"
 )
 
 # App Title
@@ -110,7 +110,7 @@ retention = df['left'].value_counts().sort_index()
 sizes = [retention.get(0, 0), retention.get(1, 0)]
 colors = ['#2ecc71', '#e74c3c']
 
-fig, ax = plt.subplots(figsize=(3.2, 3.2))
+fig, ax = plt.subplots(figsize=(2.2, 1.2))
 
 def absolute_value(val):
     total = sum(sizes)
@@ -120,17 +120,17 @@ ax.pie(
     sizes,
     colors=colors,
     autopct=absolute_value,   # 👈 shows numeric count
-    startangle=90,
-    textprops={'fontsize': 9}
+    startangle=30,
+    textprops={'fontsize': 6}
 )
 
-ax.set_title("Retention Distribution", fontsize=10, fontweight='bold')
+ax.set_title("Retention Distribution", fontsize=6, fontweight='bold')
 
 # Optional legend (clean without Yes/No text on chart)
 ax.legend(
     ["Stayed", "Left"],
     loc="upper right",
-    fontsize=7,
+    fontsize=5,
     frameon=False
 )
 
