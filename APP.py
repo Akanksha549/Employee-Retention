@@ -21,7 +21,7 @@ from sklearn.metrics import accuracy_score
 st.set_page_config(
     page_title="Employee Retention Prediction",
     page_icon="📊",
-    layout="wide"
+    layout="centered"
 )
 
 # App Title
