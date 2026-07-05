@@ -100,26 +100,43 @@ else:
     fig1.tight_layout()
 
     st.pyplot(fig1, use_container_width=False)
-    
+#----------------------------    
 # Employees Stayed vs Left
+#----------------------------
 st.subheader("Employees Stayed vs Left")
 
-retention = df['left'].value_counts()
+retention = df['left'].value_counts().sort_index()
 
-fig, ax = plt.subplots(figsize=(3.5, 2.5))  # 👈 more minimized size
+labels = ['Stayed (No)', 'Left (Yes)']
 
-ax.bar(['Stayed', 'Left'], retention.values, color=['green', 'red'])
+fig, ax = plt.subplots(figsize=(3.2, 2.0))  # compact & clean
 
-ax.set_xlabel("")
+bars = ax.bar(
+    labels,
+    retention.values,
+    color=['#2ecc71', '#e74c3c'],  # modern green/red
+    edgecolor='black',
+    linewidth=0.5
+)
+
+ax.set_title("Employees Stayed vs Left", fontsize=9, fontweight='bold')
 ax.set_ylabel("Count")
-ax.set_title("Employees Stayed vs Left", fontsize=9)
+ax.grid(axis='y', linestyle='--', alpha=0.3)  # light grid for clarity
 
-# value labels (optional but clean)
-for i, v in enumerate(retention.values):
-    ax.text(i, v + 2, str(v), ha='center', fontsize=8)
+# clean value labels
+for bar in bars:
+    height = bar.get_height()
+    ax.text(
+        bar.get_x() + bar.get_width()/2,
+        height,
+        f'{int(height)}',
+        ha='center',
+        va='bottom',
+        fontsize=8,
+        fontweight='bold'
+    )
 
 plt.tight_layout()
-
 st.pyplot(fig, use_container_width=False)
 
 # ------------------------------------------
@@ -293,23 +310,33 @@ if "model" in st.session_state:
 
     salary = salary_dict[salary]
 
-    # Prediction
-    if st.button("Predict"):
+ # Prediction
+if st.button("Predict"):
 
-        result = st.session_state["model"].predict([[
-            satisfaction,
-            monthly_hours,
-            promotion,
-            salary,
-            years
-        ]])
+    prediction = st.session_state["model"].predict([[
+        satisfaction,
+        monthly_hours,
+        promotion,
+        salary,
+        years
+    ]])
 
-        if result[0] == 0:
-            st.success(" Employee is likely to Stay in the Company.")
-        else:
-            st.error(" Employee is likely to Leave the Company.")
+    probability = st.session_state["model"].predict_proba([[
+        satisfaction,
+        monthly_hours,
+        promotion,
+        salary,
+        years
+    ]])[0]
 
-else:
-    st.warning("⚠️Please train the model first by clicking 'Train Model'.")
+    stay_prob = probability[0]
+    leave_prob = probability[1]
+
+    if prediction[0] == 0:
+        st.success(f" Employee is likely to STAY in the Company (Yes)")
+        st.info(f"Probability → Stay: {stay_prob:.2f} | Leave: {leave_prob:.2f}")
+    else:
+        st.error(f" Employee is likely to LEAVE the Company (No)")
+        st.info(f"Probability → Stay: {stay_prob:.2f} | Leave: {leave_prob:.2f}")
 
 
