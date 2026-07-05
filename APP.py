@@ -107,23 +107,32 @@ st.subheader("Employees Stayed vs Left")
 
 retention = df['left'].value_counts().sort_index()
 
-labels = ['Stayed (No)', 'Left (Yes)']
 sizes = [retention.get(0, 0), retention.get(1, 0)]
-
 colors = ['#2ecc71', '#e74c3c']
 
 fig, ax = plt.subplots(figsize=(3.2, 3.2))
 
+def absolute_value(val):
+    total = sum(sizes)
+    return int(round(val * total / 100))
+
 ax.pie(
     sizes,
-    labels=labels,
     colors=colors,
-    autopct='%1.1f%%',
+    autopct=absolute_value,   # 👈 shows numeric count
     startangle=90,
     textprops={'fontsize': 9}
 )
 
 ax.set_title("Retention Distribution", fontsize=10, fontweight='bold')
+
+# Optional legend (clean without Yes/No text on chart)
+ax.legend(
+    ["Stayed", "Left"],
+    loc="upper right",
+    fontsize=7,
+    frameon=False
+)
 
 st.pyplot(fig, use_container_width=False)
 # ------------------------------------------
@@ -141,26 +150,34 @@ with col1:
 
     fig1, ax1 = plt.subplots(figsize=(3.5, 2.5))
 
-    salary_chart.plot(
-        kind="bar",
-        ax=ax1,
-        width=0.6,
-        color=['#2ecc71', '#e74c3c']  # Stayed, Left colors
+    # Proper grouped bar chart (clean separation)
+    x = range(len(salary_chart.index))
+    width = 0.35
+
+    ax1.bar(
+        [i - width/2 for i in x],
+        salary_chart[0],
+        width=width,
+        label="Stayed",
+        color="#2ecc71"
     )
+
+    ax1.bar(
+        [i + width/2 for i in x],
+        salary_chart[1],
+        width=width,
+        label="Left",
+        color="#e74c3c"
+    )
+
+    ax1.set_xticks(list(x))
+    ax1.set_xticklabels(salary_chart.index, fontsize=8)
 
     ax1.set_title("Salary vs Retention", fontsize=9, fontweight='bold')
     ax1.set_xlabel("")
     ax1.set_ylabel("Employees", fontsize=8)
 
-    ax1.tick_params(axis='x', labelsize=8, rotation=0)
-    ax1.tick_params(axis='y', labelsize=8)
-
-    ax1.legend(
-        ["Stayed", "Left"],
-        fontsize=7,
-        loc="upper right",
-        frameon=False
-    )
+    ax1.legend(fontsize=7, frameon=False, loc="upper right")
 
     ax1.grid(axis='y', linestyle='--', alpha=0.3)
 
