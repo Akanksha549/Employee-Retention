@@ -272,6 +272,10 @@ promotion = 1 if promotion == "Yes" else 0
    if st.button("Predict"):
 
     # Convert inputs
+
+if st.button("Predict"):
+
+    # Convert inputs
     promotion = 1 if promotion == "Yes" else 0
 
     salary = {
@@ -289,9 +293,9 @@ promotion = 1 if promotion == "Yes" else 0
     ]])
 
     if prediction[0] == 0:
-        st.success("Employee is likely to Stay.")
+        st.success("✅ Employee is likely to Stay.")
     else:
-        st.error("Employee is likely to Leave.")
+        st.error("❌ Employee is likely to Leave.")
 
 else:
     st.warning("⚠️Please train the model first by clicking 'Train Model'.")
