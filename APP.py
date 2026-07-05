@@ -9,6 +9,7 @@ Original file is located at
 
 # Import libraries
 
+import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -16,87 +17,238 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 
-from google.colab import files
-uploaded = files.upload()
-
-df = pd.read_csv('HR_comma_sep.csv')
-df.head()
-
-df.shape
-
-df.columns
-
-df.info()
-
-df.describe()
-
-df.isnull().sum()
-
-df.left.value_counts()
-# 0 = Stayed
-# 1 = Left
-
-df.left.value_counts(normalize=True) * 100
-
-df.groupby('left').mean(numeric_only=True)
-
-pd.crosstab(df.salary, df.left)
-
-salary_table = pd.crosstab(df['salary'], df['left'])
-salary_table
-
-salary_table.plot(kind='bar')
-
-plt.title("Salary vs Employee Retention")
-plt.xlabel("Salary")
-plt.ylabel("Number of Employees")
-plt.legend(["Stayed", "Left"])
-plt.show()
-
-department_table = pd.crosstab(df.Department, df.left)
-
-department_table
-
-department_table.plot(kind='bar', figsize=(10,5))
-
-plt.title("Department vs Employee Retention")
-plt.xlabel("Department")
-plt.ylabel("Number of Employees")
-plt.legend(["Stayed", "Left"])
-plt.show()
-
-salary_mapping = {
-    'low': 0,
-    'medium': 1,
-    'high': 2
-}
-
-df['salary'] = df['salary'].map(salary_mapping)
-
-df.head()
-
-X = df[['satisfaction_level',
-        'average_montly_hours',
-        'promotion_last_5years',
-        'salary',
-        'time_spend_company']]
-
-y = df['left']
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=10
+# Page Configuration
+st.set_page_config(
+    page_title="Employee Retention Prediction",
+    page_icon="📊",
+    layout="wide"
 )
 
-#logistic regression model
-model = LogisticRegression()
+# App Title
+st.title("📊 Employee Retention Prediction System")
+st.markdown("### Logistic Regression Based Machine Learning Project")
+st.write("---")
 
-#train model
-model.fit(X_train, y_train)
+# Sidebar
+st.sidebar.header("Upload Dataset")
 
-#Predictions
-prediction = model.predict(X_test)
+uploaded_file = st.sidebar.file_uploader(
+    "Choose a CSV file",
+    type=["csv"]
+)
 
-#Accuracy
-accuracy = accuracy_score(y_test, prediction)
+# Load Dataset
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.success("Dataset uploaded successfully!")
+else:
+    df = pd.read_csv("HR_comma_sep.csv")
+    st.info("Using default dataset (HR_comma_sep.csv)")
 
-print("Accuracy:", accuracy)
+# ==========================
+# Dataset Preview
+# ==========================
+
+st.subheader("📋 Dataset Preview")
+
+st.dataframe(df.head())
+
+# ==========================
+# Dataset Information
+# ==========================
+
+st.subheader("📊 Dataset Information")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.write("**Number of Rows:**", df.shape[0])
+    st.write("**Number of Columns:**", df.shape[1])
+
+with col2:
+    st.write("**Column Names:**")
+    st.write(list(df.columns))
+
+# ==========================
+# Missing Values
+# ==========================
+
+st.subheader("❌ Missing Values")
+
+st.dataframe(df.isnull().sum().to_frame("Missing Values"))
+
+# ==========================
+# Employee Retention Analysis
+# ==========================
+
+st.header("📈 Employee Retention Analysis")
+
+# Employees Stayed vs Left
+st.subheader("Employees Stayed vs Left")
+
+retention = df['left'].value_counts()
+
+st.write(retention)
+
+fig, ax = plt.subplots()
+
+ax.bar(['Stayed', 'Left'], retention.values)
+
+ax.set_xlabel("Employee Status")
+ax.set_ylabel("Number of Employees")
+ax.set_title("Employees Stayed vs Left")
+
+st.pyplot(fig)
+
+st.subheader("💰 Salary vs Employee Retention")
+
+salary_table = pd.crosstab(df['salary'], df['left'])
+
+fig, ax = plt.subplots(figsize=(6,4))
+
+salary_table.plot(kind='bar', ax=ax)
+
+ax.set_title("Salary vs Employee Retention")
+ax.set_xlabel("Salary")
+ax.set_ylabel("Number of Employees")
+ax.legend(["Stayed", "Left"])
+
+st.pyplot(fig)
+
+st.subheader("🏢 Department vs Employee Retention")
+
+department_table = pd.crosstab(df['Department'], df['left'])
+
+fig, ax = plt.subplots(figsize=(10,5))
+
+department_table.plot(kind='bar', ax=ax)
+
+ax.set_title("Department vs Employee Retention")
+ax.set_xlabel("Department")
+ax.set_ylabel("Number of Employees")
+ax.legend(["Stayed", "Left"])
+
+st.pyplot(fig)
+
+# ==========================
+# Machine Learning Model
+# ==========================
+
+st.header("🤖 Logistic Regression Model")
+
+# Convert salary into numerical values
+salary_mapping = {
+    "low": 0,
+    "medium": 1,
+    "high": 2
+}
+
+df["salary"] = df["salary"].map(salary_mapping)
+
+# Select Features
+X = df[[
+    "satisfaction_level",
+    "average_montly_hours",
+    "promotion_last_5years",
+    "salary",
+    "time_spend_company"
+]]
+
+# Target Variable
+y = df["left"]
+
+# Split Dataset
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=10
+)
+
+# Train Button
+if st.button("🚀 Train Model"):
+
+    model = LogisticRegression(max_iter=1000)
+
+    model.fit(X_train, y_train)
+
+    prediction = model.predict(X_test)
+
+    accuracy = accuracy_score(y_test, prediction)
+
+    st.success("Model Trained Successfully!")
+
+    st.metric("Model Accuracy", f"{accuracy*100:.2f}%")
+
+    # Save model in session
+    st.session_state["model"] = model
+
+# ==========================
+# Employee Retention Prediction
+# ==========================
+
+st.header("🔍 Predict Employee Retention")
+
+# Check if model is trained
+if "model" in st.session_state:
+
+    satisfaction = st.slider(
+        "Satisfaction Level",
+        min_value=0.0,
+        max_value=1.0,
+        value=0.50,
+        step=0.01
+    )
+
+    monthly_hours = st.number_input(
+        "Average Monthly Hours",
+        min_value=50,
+        max_value=350,
+        value=200
+    )
+
+    promotion = st.selectbox(
+        "Promotion in Last 5 Years",
+        ["No", "Yes"]
+    )
+
+    salary = st.selectbox(
+        "Salary",
+        ["Low", "Medium", "High"]
+    )
+
+    years = st.number_input(
+        "Time Spent in Company (Years)",
+        min_value=1,
+        max_value=10,
+        value=3
+    )
+
+    # Convert inputs
+    promotion = 1 if promotion == "Yes" else 0
+
+    salary_dict = {
+        "Low": 0,
+        "Medium": 1,
+        "High": 2
+    }
+
+    salary = salary_dict[salary]
+
+    # Prediction
+    if st.button("Predict"):
+
+        result = st.session_state["model"].predict([[
+            satisfaction,
+            monthly_hours,
+            promotion,
+            salary,
+            years
+        ]])
+
+        if result[0] == 0:
+            st.success("Employee is likely to Stay in the Company.")
+        else:
+            st.error("Employee is likely to Leave the Company.")
+
+else:
+    st.warning("⚠️ Please train the model first by clicking 'Train Model'.")
